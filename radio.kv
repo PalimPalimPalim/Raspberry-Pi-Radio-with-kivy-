@@ -1,0 +1,117 @@
+#""" This kv file defines the Layout of RadioApp"""
+#:import rdc radiocontrols
+#root widget
+BoxLayout:
+    FloatLayout:
+        BoxLayout:
+            orientation:'vertical'
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y:None
+                height: clocklbl.height
+                Label:
+                ClockLbl:
+                    id: clocklbl
+                    size: self.texture_size
+            StationLbl:
+                font_size: 20
+                text_size: self.width, None
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y:None
+                height: volumelbl.height
+                Label:
+                VolumeLbl:
+                    size_hint: (None, None)
+                    id: volumelbl
+                    size: self.texture_size
+                Label:
+                    size_hint_x: None
+                    width: volumelbl.height
+                
+
+               
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: 0.8
+                BoxLayout:
+                    Button:
+                        text: 'previous'
+                        on_press: rdc.play_previous()
+                    Button: 
+                        text: 'next'
+                        on_press: rdc.play_next()
+                    
+
+                BoxLayout:
+                    Button:
+                        text: "Exit"
+                        on_press: app.stop()
+                    Button:
+                        text: 'restart'
+                        on_press: rdc.reboot()
+                    VolumeBtn:
+
+                        
+
+        PlayPauseBtn:
+            canvas.before:
+                Color:
+                    rgb:(1,1,1)
+                Ellipse:
+                    pos: self.pos
+                    size: self.size
+            x: (self.parent.width - self.width)/2
+            y: ((self.parent.height - self.height)/2)*0.5
+            size_hint: (0.4, None)
+            height: self.width
+            on_press: self.toggle_play_pause()
+            Image:
+                x: self.parent.x +self.parent.width*0.5 -self.width*0.5
+                y: self.parent.y +self.parent.height*0.5 -self.height*0.5
+                source: self.parent.img_source
+                keep_ratio: True
+                allow_stretch: True
+                size_hint:(None, None)
+                width: root.height
+
+    ScrollView:
+        ChannelGrid:
+            size_hint_y: None
+            height: self.minimum_height
+            cols: 3
+
+
+          
+          
+     
+# further definitions of widgets
+<ChannelBtn>
+    size_hint: (1, None)
+    height: self.width
+    on_press: self.play_channel()
+
+<VolumeBtn>:
+    text: 'Volume'
+    on_press: self.open_vlm_slider()
+
+<VolumeMdlVw>:
+    size_hint: (None, None)
+    on_dismiss: app.root.ids.volumelbl.update()
+    BoxLayout:
+        orientation: 'vertical'
+        Slider:
+            id: slider
+            orientation: 'vertical'
+            min: 0
+            max: 100
+            padding: 0
+            value: root.volume
+            step:1
+            on_touch_move: rdc.set_volume(self.value)
+        Button:
+            height: self.parent.width
+            size_hint_y: None
+            text: 'Mute'
+            on_press: root.mute()
